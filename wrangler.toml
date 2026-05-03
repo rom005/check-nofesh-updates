@@ -1,0 +1,13 @@
+name = "check-vacations"
+main = "src/worker.js"
+compatibility_date = "2026-05-02"
+
+
+[[kv_namespaces]]
+binding = "LAST_DEALS"
+id = "ef5479684f5f4ec9b4b4dcf42aa99591"
+
+[[kv_namespaces]]
+binding = "COOKIES_KV"
+id = "REPLACE_WITH_COOKIES_KV_ID"
+

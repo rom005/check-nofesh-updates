@@ -1,0 +1,19 @@
+{
+  "name": "monitor-nofesh-deals",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Monitor nofesh.digital.idf.il for new vacation deals using Playwright.",
+  "main": "monitor-deals.js",
+  "scripts": {
+    "start": "node monitor-deals.js",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "playwright": "^1.43.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.80.0"
+  }
+}
