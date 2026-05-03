@@ -160,29 +160,34 @@ async function runOnce(env) {
 
   await env.LAST_DEALS.put('last_deals', JSON.stringify(deals));
 
-  const summary = `[${new Date().toISOString()}] Deals: ${deals.length} | New: ${newOnes.length}`;
-  await sendTelegramMessage(env, summary);
+  const summary = `Good news! Found ${newOnes.length} new offer(s). Total offers: ${deals.length}. Checked at ${new Date().toISOString()}.`;
+  if (newOnes.length > 0) {
+    await sendTelegramMessage(env, summary);
+  }
+  return { dealsCount: deals.length, newDealsCount: newOnes.length, summary };
 }
 
 export default {
   async scheduled(event, env, ctx) {
     ctx.waitUntil(
-      runOnce(env).catch(async (err) => {
-        const message = `[${new Date().toISOString()}] Error: ${err?.message || err}`;
-        await sendTelegramMessage(env, message);
-      })
+      runOnce(env)
     );
   },
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/trigger') {
       try {
-        await runOnce(env);
-        return new Response('OK', { status: 200 });
+        const result = await runOnce(env);
+        return new Response(JSON.stringify(result), {
+          status: 200,
+          headers: { 'content-type': 'application/json' }
+        });
       } catch (err) {
         const message = `[${new Date().toISOString()}] Error: ${err?.message || err}`;
-        await sendTelegramMessage(env, message);
-        return new Response('Error', { status: 500 });
+        return new Response(JSON.stringify({ error: message }), {
+          status: 500,
+          headers: { 'content-type': 'application/json' }
+        });
       }
     }
 
@@ -198,14 +203,14 @@ export default {
         }
 
         if (message.toLowerCase() === 'run') {
-          await runOnce(env);
-          await sendTelegramMessage(env, 'Run completed.');
+          const result = await runOnce(env);
+          if (result.newDealsCount > 0) {
+            await sendTelegramMessage(env, result.summary);
+          }
         }
 
         return new Response('OK', { status: 200 });
       } catch (err) {
-        const errorMessage = `[${new Date().toISOString()}] Error: ${err?.message || err}`;
-        await sendTelegramMessage(env, errorMessage);
         return new Response('Error', { status: 500 });
       }
     }
