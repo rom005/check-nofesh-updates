@@ -180,16 +180,10 @@ export default {
     if (url.pathname === '/trigger') {
       try {
         const result = await runOnce(env);
-        return new Response(JSON.stringify(result), {
-          status: 200,
-          headers: { 'content-type': 'application/json' }
-        });
+        return new Response(result.summary, { status: 200 });
       } catch (err) {
         const message = `[${new Date().toISOString()}] Error: ${err?.message || err}`;
-        return new Response(JSON.stringify({ error: message }), {
-          status: 500,
-          headers: { 'content-type': 'application/json' }
-        });
+        return new Response(message, { status: 500 });
       }
     }
 
