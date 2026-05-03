@@ -11,6 +11,4 @@ jobs:
     steps:
       - name: Trigger worker
         run: |
-          curl -fsS \
-            -H "x-trigger-token: ${{ secrets.TRIGGER_TOKEN }}" \
-            "${{ secrets.TRIGGER_URL }}"
+          curl -fsS "${{ secrets.TRIGGER_URL }}"

@@ -7,4 +7,8 @@ compatibility_date = "2026-05-02"
 binding = "LAST_DEALS"
 id = "ef5479684f5f4ec9b4b4dcf42aa99591"
 
+[[kv_namespaces]]
+binding = "COOKIES_KV"
+id = "fcd9d046a11845ac9fb1eeb132a1558e"
+
 
