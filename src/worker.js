@@ -175,17 +175,34 @@ export default {
   },
   async fetch(request, env) {
     const url = new URL(request.url);
-    if (url.pathname !== '/trigger') {
-      return new Response('Not Found', { status: 404 });
+    if (url.pathname === '/trigger') {
+      return new Response('Idle', { status: 200 });
     }
 
-    try {
-      await runOnce(env);
-      return new Response('OK', { status: 200 });
-    } catch (err) {
-      const message = `[${new Date().toISOString()}] Error: ${err?.message || err}`;
-      await sendTelegramMessage(env, message);
-      return new Response('Error', { status: 500 });
+    if (url.pathname === '/telegram') {
+      try {
+        const update = await request.json();
+        const message = update?.message?.text?.trim?.() || '';
+        const chatId = String(update?.message?.chat?.id || '');
+        const allowedChatId = String(env.TELEGRAM_CHAT_ID || '');
+
+        if (allowedChatId && chatId !== allowedChatId) {
+          return new Response('Forbidden', { status: 403 });
+        }
+
+        if (message.toLowerCase() === 'run') {
+          await runOnce(env);
+          await sendTelegramMessage(env, 'Run completed.');
+        }
+
+        return new Response('OK', { status: 200 });
+      } catch (err) {
+        const errorMessage = `[${new Date().toISOString()}] Error: ${err?.message || err}`;
+        await sendTelegramMessage(env, errorMessage);
+        return new Response('Error', { status: 500 });
+      }
     }
+
+    return new Response('Not Found', { status: 404 });
   }
 };
