@@ -160,7 +160,9 @@ async function runOnce(env) {
 
   await env.LAST_DEALS.put('last_deals', JSON.stringify(deals));
 
-  const summary = `Good news! Found ${newOnes.length} new offer(s). Total offers: ${deals.length}. Checked at ${new Date().toISOString()}.`;
+  const summary = newOnes.length > 0
+    ? `Good news! Found ${newOnes.length} new offer(s). Total offers: ${deals.length}. Checked at ${new Date().toISOString()}.`
+    : `No new offers. Total offers: ${deals.length}. Checked at ${new Date().toISOString()}.`;
   if (newOnes.length > 0) {
     await sendTelegramMessage(env, summary);
   }
