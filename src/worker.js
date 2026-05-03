@@ -1,4 +1,5 @@
 const API_URL = 'https://nofesh.digital.idf.il/api/search/deals';
+const DEFAULT_REFERER = 'https://nofesh.digital.idf.il/search-results?filters=y3g5y4f';
 
 const DEFAULT_BODY = JSON.stringify({
   filters: {
